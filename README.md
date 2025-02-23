@@ -1,1 +1,1 @@
-# hki-pw-frontend
+# HKI 2050 frontend
