@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    jwt: null as string | null,
+    jwt: localStorage.getItem('jwt'),
   }),
   actions: {
     setToken(token: string) {
