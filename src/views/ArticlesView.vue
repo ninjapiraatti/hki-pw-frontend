@@ -18,6 +18,7 @@
 import { Article } from "@/types"
 import { useUserStore } from "@/stores/user"
 import { ref, onMounted } from "vue"
+import router from "@/router"
 
 const responseMessage = ref("")
 const articles = ref<Article[]>([])
@@ -41,6 +42,8 @@ const getArticles = async () => {
 			articles.value = data.articles
 		} else if (response.status === 404) {
 			console.warn("No content")
+		} else if (response.status === 401) {
+			router.push("/login")
 		} else {
 			throw new Error(`Error: ${response.status} ${response.statusText}`)
 		}

@@ -12,6 +12,7 @@ import { Article } from "@/types"
 import { useUserStore } from "@/stores/user"
 import { ref, onMounted, computed } from "vue"
 import { useRoute } from "vue-router"
+import router from "@/router"
 
 const article = ref<Article>()
 const userStore = useUserStore()
@@ -36,6 +37,8 @@ const getArticle = async (articleId: string) => {
 			article.value = data
 		} else if (response.status === 404) {
 			console.warn("No content")
+		} else if (response.status === 401) {
+			router.push("/login")
 		} else {
 			throw new Error(`Error: ${response.status} ${response.statusText}`)
 		}
