@@ -20,3 +20,19 @@ export interface Article {
   created: string
   updated: string
 }
+
+export interface Effect {
+  name: string
+  description: string
+}
+
+export interface Thing {
+  id: string
+  title: string
+  body: string
+  images: File[]
+  tags: string[]
+  created: string
+  updated: string
+  effects: Effect[]
+}
