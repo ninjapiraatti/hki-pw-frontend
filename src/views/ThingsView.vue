@@ -1,30 +1,35 @@
 <template>
-	<div class="container-fluid">
-		<div class="angled-corner p-4 mb-4 mt-4">
-			<h1>Weapons, items, and all such things</h1>
-			<ul>
-				<li v-for="thing in things" :key="thing.id">
-					<router-link :to="`/things/${thing.id}`">{{ thing.title }}</router-link>
-				</li>
-			</ul>
-			<div class="card">
-				<p>{{ responseMessage }}</p>
-			</div>
-		</div>
-	</div>
+  <div class="container-fluid">
+    <h1 class="mt-4">Weapons, items, and all such things</h1>
+    <masonry-wall :items="things" :ssr-columns="1" :column-width="300" :gap="16">
+      <template #default="{ item, index }">
+        <div>
+          <!-- <img class="card-img-top" :src="`${Object.values(thing.images)[0]}`" alt="thing.title" /> -->
+          <img class="card-img-top w-100" :src="`../app/src/assets/square${rnd5}.jpg`" alt="thing.title" />
+          <div class="card-body">
+            <h5 class="card-title">
+                <router-link :to="`/things/${item.id}`">{{ item.title }}</router-link>
+            </h5>
+            <p class="card-text">{{ item.body }}</p>
+          </div>
+        </div>
+      </template>
+    </masonry-wall>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { Thing } from "@/types"
 import { useUserStore } from "@/stores/user"
-import { ref, onMounted } from "vue"
+import { ref, onMounted, computed } from "vue"
 import router from "@/router"
 
-const responseMessage = ref("")
 const things = ref<Thing[]>([])
 const userStore = useUserStore()
+const rnd5 = computed(() => Math.floor(Math.random() * 5) + 1)
+const isLocalEnvironment = computed(() => import.meta.env.DEV)
 
-const getthings = async () => {
+const getThings = async () => {
 	try {
 		const response = await fetch(`https://hki2050.com/api/things`, {
 			method: "GET",
@@ -52,7 +57,31 @@ const getthings = async () => {
 	}
 }
 
+const createDummyItems = () => {
+  for (let i = 0; i < 12; i++) {
+    things.value.push({
+      id: i,
+      title: `Dummy item ${i}`,
+      body: getDummyText(),
+    })
+  }
+}
+
+const getDummyText = () => {
+  const text = [
+    "Lorem ipsum dolor sit amet, conset.",
+    "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex e dunt ut labore et dolore magna dunt ut labore et dolore magna  a commodo consequat.",
+    "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  ]
+  return text[Math.floor(Math.random() * text.length)]
+}
+
 onMounted(async() => {
-	await getthings()
+	await getThings()
+  if (isLocalEnvironment.value) {
+    createDummyItems()
+  }
 })
 </script>
