@@ -1,6 +1,12 @@
 // Bootstrap overrides
 
-$primary: #00ff6a;
+$primary: #ff047b;
+$cyan: #00f0ff;
+
+$dark-bg-subtle-dark: rgba(0, 0, 0, 0.80);
+$link-color-dark: $primary;
+$link-hover-color-dark: $cyan;
+$link-decoration: none;
 
 :root {
   --magenta-color: #ff147f; // define in BS instead
@@ -9,6 +15,46 @@ $primary: #00ff6a;
 }
 
 // Cyberpunk styles
+
+body {
+  letter-spacing: -0.03rem;
+}
+
+a {
+  transition: 0.2s color;
+}
+
+.card-title {
+  margin-top: -1.6rem;
+  padding: 0.2rem 0.2rem;
+}
+
+.hover-swipe {
+  transition: 0.1s all;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -5%;
+    width: 0;
+    height: 100%;
+    background-color: #000;
+    transition: none;
+    z-index: -1;
+  }
+
+  &:hover {
+    color: $cyan;
+    &::before {
+      width: 100%;
+      animation: jagged-swipe 0.4s steps(8, end) forwards;
+    }
+  }
+}
 
 .glitch {
   animation: glitch-animation 1s linear 0s;
@@ -300,5 +346,32 @@ $primary: #00ff6a;
   to {
     clip-path: polygon(0 0, 0 0, 0 0, 0 0);
     opacity: 1;
+  }
+}
+
+@keyframes jagged-swipe {
+  0% {
+    width: 0%;
+  }
+  20% {
+    width: 38%;
+  }
+  22% {
+    width: 10%;
+  }
+  69% {
+    width: 13%;
+  }
+  72% {
+    width: 57%;
+  }
+  75% {
+    width: 91%;
+  }
+  95% {
+    width: 84%;
+  }
+  100% {
+    width: 110%;
   }
 }

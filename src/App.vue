@@ -44,7 +44,7 @@ function startRandomClassTimer(className: string, tagNames: string[], interval: 
 }
 
 onMounted(async() => {
-	startRandomClassTimer("glitch", ["img", "svg", "a", "h1"], 1000, 0.5)
+	startRandomClassTimer("glitch", ["img", "svg", "a", "h1"], 5000, 0.5)
 	if (!userStore.isAuthenticated){
 		router.push("/login")
 	}

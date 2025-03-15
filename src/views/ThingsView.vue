@@ -1,16 +1,16 @@
 <template>
-  <div class="container-fluid">
-    <h1 class="mt-4">Weapons, items, and all such things</h1>
-    <masonry-wall :items="things" :ssr-columns="1" :column-width="300" :gap="16">
+  <div class="container-fluid p-5">
+    <h1 class="mb-3">Weapons, items, and all such things</h1>
+    <masonry-wall :items="things" :ssr-columns="1" :column-width="300" :gap="48">
       <template #default="{ item, index }">
-        <div>
+        <div class="card bg-dark-subtle p-2">
           <!-- <img class="card-img-top" :src="`${Object.values(thing.images)[0]}`" alt="thing.title" /> -->
-          <img class="card-img-top w-100" :src="`../app/src/assets/square${rnd5}.jpg`" alt="thing.title" />
+          <img class="card-img-top w-100" :src="`../app/src/assets/square${index + 1 < 6 ? index + 1 : 4}.jpg`" alt="thing.title" />
           <div class="card-body">
             <h5 class="card-title">
-                <router-link :to="`/things/${item.id}`">{{ item.title }}</router-link>
+              <router-link class="hover-swipe card-title" :to="`/things/${item.id}`">{{ item.title }}</router-link>
             </h5>
-            <p class="card-text">{{ item.body }}</p>
+            <p class="small">{{ item.body }}</p>
           </div>
         </div>
       </template>
