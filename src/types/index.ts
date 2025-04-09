@@ -1,4 +1,15 @@
-export interface Character {
+export interface Listable {
+  id: string
+  title: string
+  ingress?: string
+  body: string
+  images?: File[]
+  tags?: string[]
+  created: string
+  updated: string
+}
+
+export interface Character extends Listable {
   name: string
   bio: string
   image: File | null
@@ -11,14 +22,8 @@ export interface Character {
   luck: number
 }
 
-export interface Article {
-  id: string
-  title: string
-  body: string
-  images: File[]
-  tags: string[]
-  created: string
-  updated: string
+export interface Article extends Listable {
+  author: string
 }
 
 export interface Effect {
@@ -26,13 +31,6 @@ export interface Effect {
   description: string
 }
 
-export interface Thing {
-  id: string
-  title: string
-  body: string
-  images: File[]
-  tags: string[]
-  created: string
-  updated: string
+export interface Thing extends Listable {
   effects: Effect[]
 }

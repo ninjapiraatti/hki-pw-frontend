@@ -1,9 +1,9 @@
 <template>
   <div class="container-fluid p-5">
-    <h1 class="mb-3">Articles</h1>
+    <h1 class="mb-3">Characters</h1>
     <MasonryListing
-			baseUrl="articles"
-      :items="articles"
+			baseUrl="characters"
+      :items="characters"
       :ssr-columns="1"
       :column-width="300"
       :gap="48"
@@ -23,12 +23,12 @@ import router from "@/router"
 import MasonryListing from "@/components/MasonryListing.vue"
 
 const responseMessage = ref("")
-const articles = ref<Listable[]>([])
+const characters = ref<Listable[]>([])
 const userStore = useUserStore()
 
-const getArticles = async () => {
+const getCharacters = async () => {
 	try {
-		const response = await fetch(`https://hki2050.com/api/articles`, {
+		const response = await fetch(`https://hki2050.com/api/characters`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -41,7 +41,7 @@ const getArticles = async () => {
 		})
 		if (response.ok) {
 			const data = await response.json()
-			articles.value = data.articles
+			characters.value = data.characters
 		} else if (response.status === 404) {
 			console.warn("No content")
 		} else if (response.status === 401) {
@@ -55,6 +55,6 @@ const getArticles = async () => {
 }
 
 onMounted(async() => {
-	await getArticles()
+	await getCharacters()
 })
 </script>

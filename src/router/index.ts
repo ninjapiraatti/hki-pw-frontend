@@ -2,6 +2,7 @@ import ArticlesView from "@/views/ArticlesView.vue"
 import ArticleView from "@/views/ArticleView.vue"
 import ThingsView from "@/views/ThingsView.vue"
 import ThingView from "@/views/ThingView.vue"
+import CharactersView from "@/views/CharactersView.vue"
 import CharacterView from "@/views/CharacterView.vue"
 import HomeView from "@/views/HomeView.vue"
 import LoginView from "@/views/LoginView.vue"
@@ -41,6 +42,11 @@ const router = createRouter({
 			path: "/things/:id",
 			name: "Thing",
 			component: ThingView,
+		},
+		{
+			path: "/characters",
+			name: "Characters",
+			component: CharactersView,
 		},
 		{
 			path: "/characters/:id",

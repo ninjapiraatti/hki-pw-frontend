@@ -1,30 +1,25 @@
 <template>
   <div class="container-fluid p-5">
     <h1 class="mb-3">Weapons, items, and all such things</h1>
-    <masonry-wall :items="things" :ssr-columns="1" :column-width="300" :gap="48">
-      <template #default="{ item, index }">
-        <div class="card bg-dark-subtle p-2">
-          <!-- <img class="card-img-top" :src="`${Object.values(thing.images)[0]}`" alt="thing.title" /> -->
-          <img class="card-img-top w-100" :src="`../app/src/assets/square${index + 1 < 6 ? index + 1 : 4}.jpg`" alt="thing.title" />
-          <div class="card-body">
-            <h5 class="card-title">
-              <router-link class="hover-swipe card-title" :to="`/things/${item.id}`">{{ item.title }}</router-link>
-            </h5>
-            <p class="small">{{ item.body }}</p>
-          </div>
-        </div>
-      </template>
-    </masonry-wall>
+    <MasonryListing
+      baseUrl="things"
+      :items="things"
+      :ssr-columns="1"
+      :column-width="300"
+      :gap="48"
+      :key="rnd5"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { Thing } from "@/types"
+import { Listable } from "@/types"
 import { useUserStore } from "@/stores/user"
 import { ref, onMounted, computed } from "vue"
 import router from "@/router"
+import MasonryListing from "@/components/MasonryListing.vue"
 
-const things = ref<Thing[]>([])
+const things = ref<Listable[]>([])
 const userStore = useUserStore()
 const rnd5 = computed(() => Math.floor(Math.random() * 5) + 1)
 const isLocalEnvironment = computed(() => import.meta.env.DEV)
