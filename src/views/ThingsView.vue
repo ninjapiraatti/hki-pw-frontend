@@ -7,7 +7,6 @@
       :ssr-columns="1"
       :column-width="300"
       :gap="48"
-      :key="rnd5"
     />
   </div>
 </template>
@@ -55,9 +54,11 @@ const getThings = async () => {
 const createDummyItems = () => {
   for (let i = 0; i < 12; i++) {
     things.value.push({
-      id: i,
+      id: `i`,
       title: `Dummy item ${i}`,
       body: getDummyText(),
+      created: new Date().toISOString(),
+      updated: new Date().toISOString(),
     })
   }
 }

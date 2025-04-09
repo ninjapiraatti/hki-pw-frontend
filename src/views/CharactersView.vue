@@ -7,7 +7,6 @@
       :ssr-columns="1"
       :column-width="300"
       :gap="48"
-      :key="rnd5"
     />
   </div>
 	<div class="card">

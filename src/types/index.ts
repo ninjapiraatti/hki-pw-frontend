@@ -3,7 +3,7 @@ export interface Listable {
   title: string
   ingress?: string
   body: string
-  images?: File[]
+  images?: Record<string, string>
   tags?: string[]
   created: string
   updated: string

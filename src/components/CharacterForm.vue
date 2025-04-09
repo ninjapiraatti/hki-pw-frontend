@@ -73,6 +73,11 @@ const imageUrl = computed(() => {
 })
 
 const form = ref<Character>({
+	id: props.character?.id || "",
+	title: "",
+	body: "",
+	created: new Date().toISOString(),
+	updated: new Date().toISOString(),
 	name: "",
 	bio: "",
 	image: null,
