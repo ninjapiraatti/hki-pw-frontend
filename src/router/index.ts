@@ -6,7 +6,7 @@ import CharactersView from "@/views/CharactersView.vue"
 import CharacterView from "@/views/CharacterView.vue"
 import HomeView from "@/views/HomeView.vue"
 import LoginView from "@/views/LoginView.vue"
-import NotFoundView from "@/views/NotFoundView.vue"
+import NotFoundView404 from "@/views/404View.vue"
 
 import { createRouter, createWebHistory } from "vue-router"
 
@@ -78,7 +78,8 @@ const router = createRouter({
     */
 		{
 			path: "/:catchAll(.*)",
-			component: NotFoundView,
+			name: "NotFound",
+			component: NotFoundView404,
 		},
 	],
 })

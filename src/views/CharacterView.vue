@@ -1,18 +1,20 @@
 <template>
 	<div class="character-view">
-		<h2 v-if="character">{{ character.name }}</h2>
+		<h2 v-if="character">{{ character.title }}</h2>
 		<h2 v-else>Create Character</h2>
 		<CharacterForm :character="character" @onSubmit="postCharacter" />
 	</div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed } from "vue"
-import CharacterForm from "@/components/CharacterForm.vue"
 import { Character } from "@/types"
+import { useUserStore } from "@/stores/user"
+import { onMounted, ref, computed } from "vue"
 import { useRoute } from "vue-router"
+import CharacterForm from "@/components/CharacterForm.vue"
 
 const route = useRoute()
+const userStore = useUserStore()
 const character = ref<Character | null>(null)
 const loading = ref(false)
 
@@ -22,11 +24,15 @@ const characterId = computed(() => {
 
 const getCharacter = async (characterId: string) => {
 	try {
-		const response = await fetch(`http://localhost:8888/hki-pw/characters/${characterId}/`, {
+		const response = await fetch(`https://hki2050.com/api/characters/${characterId}/`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
-				"X-Requested-With": "XMLHttpRequest",
+				"X-API-Key": import
+					.meta
+					.env
+					.VITE_PW_APIKEY as string,
+				"authorization": 'Bearer ' + userStore.jwt,
 			},
 		})
 		if (response.ok) {
@@ -86,10 +92,8 @@ const postCharacter = async (newCharacter: Character) => {
 }
 
 onMounted(() => {
-	/*
 	if (typeof characterId.value === 'string') {
 		getCharacter(characterId.value)
 	}
-		*/
 })
 </script>

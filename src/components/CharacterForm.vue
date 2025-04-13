@@ -11,7 +11,7 @@
 			<div class="mb-3 w-100 row">
 				<label for="bio" class="col-sm-2 col-form-label">Bio</label>
 				<div class="col-sm-10">
-					<textarea class="form-control" id="bio" name="bio" v-model="form.bio" required />
+					<textarea class="form-control" id="bio" name="bio" v-model="form.body" required />
 				</div>
 			</div>
 
@@ -90,7 +90,6 @@ const form = ref<Character>({
 	luck: 1,
 })
 
-// Watch for changes in the character prop to populate the form for editing
 watch(
 	() => props.character,
 	(newCharacter) => {
