@@ -8,71 +8,88 @@
 		</div>
 		
 		<form @submit.prevent="submitForm">
-			<div class="mb-4 character-header">
-				<div v-if="editMode" class="w-100 row">
-					<label for="name" class="col-sm-2 col-form-label">Name</label>
-					<div class="col-sm-10">
-						<input type="text" class="form-control" id="name" v-model="form.name" required />
+			<div class="angled-corner p-3">
+				<div class="mb-4 character-header">
+					<div v-if="editMode" class="w-100 row">
+						<label for="name" class="col-sm-2 col-form-label">Name</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="name" v-model="form.name" required />
+						</div>
+					</div>
+					<div v-else>
+						<h1 class="display-4">{{ form.title || "Unnamed Character" }}</h1>
 					</div>
 				</div>
-				<div v-else class="angled-corner p-3">
-					<h1 class="display-4">{{ form.name || "Unnamed Character" }}</h1>
-				</div>
-			</div>
-
-			<div class="mb-4">
-				<div v-if="editMode" class="w-100 row">
-					<label for="bio" class="col-sm-2 col-form-label">Bio</label>
-					<div class="col-sm-10">
-						<textarea class="form-control" id="bio" name="bio" v-model="form.body" required />
-					</div>
-				</div>
-				<div v-else class="angled-corner p-3">
-					<h4 class="text-muted mb-2">Bio</h4>
-					<p>{{ form.body || "No bio available" }}</p>
-				</div>
-			</div>
-
-			<div class="mb-4">
-				<div v-if="imageUrl.length">
-					<img :src="imageUrl" class="mb-3 character-image" />
-				</div>
-				<div v-if="editMode" class="mb-3 w-100 row">
-					<label for="image" class="form-label">Picture</label>
-					<input class="form-control" type="file" id="image" @change="onImageChange" />
-				</div>
-			</div>
-
-			<div class="stats-section angled-corner p-4 mb-4">
-				<h4 class="text-muted mb-4">Character Stats</h4>
+	
 				<div class="row">
-					<div v-for="(stat, index) in stats" :key="index" class="col-md-6 mb-3">
-						<div v-if="editMode" class="w-100 row">
-							<label :for="stat" class="col-sm-4 col-form-label text-capitalize">{{ stat }}</label>
-							<div class="col-sm-8">
-								<input
-									type="number"
-									class="form-control"
-									:id="stat"
-									v-model.number="form[stat]"
-									min="1"
-									max="10"
-									required
-								/>
+					<div class="col-6">
+						<div class="mb-4">
+							<div v-if="imageUrl.length">
+								<img :src="imageUrl" class="mb-3 character-image" />
+							</div>
+							<div v-if="editMode" class="mb-3 w-100 row">
+								<label for="image" class="form-label">Picture</label>
+								<input class="form-control" type="file" id="image" @change="onImageChange" />
 							</div>
 						</div>
-						<div v-else class="stat-display">
-							<div class="d-flex justify-content-between align-items-center">
-								<span class="text-capitalize stat-label">{{ stat }}</span>
-								<div class="stat-bars">
-									<div 
-										v-for="n in 10" 
-										:key="n" 
-										class="stat-bar" 
-										:class="{ 'filled': n <= form[stat] }"
-									></div>
+					</div>
+					<div class="col-6">
+						<h4 class="text-muted mb-4">Character Stats</h4>
+							<div v-for="(stat, index) in stats" :key="index">
+								<div v-if="editMode" class="w-100 row">
+								<label :for="stat" class="col-sm-4 col-form-label text-capitalize">{{ stat }}</label>
+								<div class="col-sm-8">
+									<input
+										type="number"
+										class="form-control"
+										:id="stat"
+										v-model.number="form[stat]"
+										min="1"
+										max="10"
+										required
+									/>
 								</div>
-								<span class="stat-value">{{ form[stat] }}/10</span>
+							</div>
+							<div v-else class="stat-display">
+								<div class="d-flex justify-content-between align-items-center">
+									<span class="text-capitalize stat-label">{{ stat }}</span>
+									<div class="stat-bars">
+										<div 
+											v-for="n in 10" 
+											:key="n" 
+											class="stat-bar" 
+											:class="{ 'filled': n <= form[stat] }"
+										></div>
+									</div>
+									<span class="stat-value">{{ form[stat] }}</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="mb-4">
+					<div v-if="editMode" class="w-100 row">
+						<label for="bio" class="col-sm-2 col-form-label">Bio</label>
+						<div class="col-sm-10">
+							<textarea class="form-control" id="bio" name="bio" v-model="form.body" required />
+						</div>
+					</div>
+					<div v-else>
+						<h4 class="text-muted mb-2">Bio</h4>
+						<p>{{ form.body || "No bio available" }}</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="skills-section angled-corner p-4 mb-4">
+				<h4 class="text-muted mb-4">Skills</h4>
+				<div class="row">
+					<div v-for="(skill, index) in skillsList" :key="index">
+						<div class="skill-display">
+							<div class="d-flex justify-content-between align-items-center">
+								<span class="skill-label">{{ skill.name }}</span>
+								<span class="skill-formula text-muted">{{ getSkillFormulaDisplay(skill) }}</span>
+								<span class="skill-value">{{ calculateSkillValue(skill) }}</span>
 							</div>
 						</div>
 					</div>
@@ -99,6 +116,50 @@ const props = defineProps<{
 
 const stats = ["strength", "perception", "endurance", "charisma", "intelligence", "agility", "luck"] as const
 type Stat = typeof stats[number]
+
+interface Skill {
+	name: string;
+	formula: [Stat, Stat];
+}
+
+const skillsList: Skill[] = [
+	{ name: "Brute Force", formula: ["strength", "strength"] },
+	{ name: "Wrestle", formula: ["strength", "endurance"] },
+	{ name: "Melee", formula: ["strength", "agility"] },
+	{ name: "Drunken Fight", formula: ["strength", "luck"] },
+	{ name: "Firearms", formula: ["perception", "agility"] },
+	{ name: "Lockpicking", formula: ["perception", "perception"] },
+	{ name: "Outdoorsmanship", formula: ["perception", "endurance"] },
+	{ name: "Medical", formula: ["perception", "intelligence"] },
+	{ name: "Investigation", formula: ["perception", "intelligence"] },
+	{ name: "Mechanics", formula: ["perception", "agility"] },
+	{ name: "Health", formula: ["endurance", "endurance"] },
+	{ name: "Stealth", formula: ["endurance", "agility"] },
+	{ name: "Sustained strength", formula: ["endurance", "strength"] },
+	{ name: "Sex", formula: ["endurance", "charisma"] },
+	{ name: "Persuasion", formula: ["charisma", "charisma"] },
+	{ name: "Bartering", formula: ["charisma", "intelligence"] },
+	{ name: "Street smarts", formula: ["charisma", "intelligence"] },
+	{ name: "Distraction", formula: ["charisma", "luck"] },
+	{ name: "Performance", formula: ["charisma", "luck"] },
+	{ name: "Hacking", formula: ["intelligence", "intelligence"] },
+	{ name: "Stealing", formula: ["agility", "agility"] },
+	{ name: "Initiative", formula: ["agility", "luck"] },
+	{ name: "Critical hits", formula: ["luck", "luck"] },
+	{ name: "Gambling", formula: ["luck", "intelligence"] },
+]
+
+const calculateSkillValue = (skill: Skill): number => {
+	const attr1 = form.value[skill.formula[0]] || 1
+	const attr2 = form.value[skill.formula[1]] || 1
+	return (attr1 + attr2) * 3
+}
+
+const getSkillFormulaDisplay = (skill: Skill): string => {
+	const attr1 = skill.formula[0].substring(0, 3).toUpperCase()
+	const attr2 = skill.formula[1].substring(0, 3).toUpperCase()
+	return `${attr1} + ${attr2}`
+}
 
 const editMode = ref(props.character === null)
 const toggleEditMode = () => {
@@ -199,5 +260,31 @@ const submitForm = () => {
 .stat-value {
 	width: 50px;
 	text-align: right;
+}
+
+.skills-section {
+	margin-top: 2rem;
+}
+
+.skill-display {
+	padding: 0.5rem;
+	border-radius: 4px;
+}
+
+.skill-label {
+	font-weight: bold;
+	width: 140px;
+}
+
+.skill-formula {
+	font-size: 0.85rem;
+	width: 80px;
+	text-align: center;
+}
+
+.skill-value {
+	width: 50px;
+	text-align: right;
+	font-weight: bold;
 }
 </style>
