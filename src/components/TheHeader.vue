@@ -20,13 +20,13 @@
 						</router-link>
 					</li>
 					<li class="nav-item">
-						<router-link class="nav-link" to="/characters">Characters</router-link>
+						<router-link class="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" to="/characters">Characters</router-link>
 					</li>
 					<li class="nav-item">
-						<router-link class="nav-link" to="/articles">Articles</router-link>
+						<router-link class="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" to="/articles">Articles</router-link>
 					</li>
 					<li class="nav-item">
-						<router-link class="nav-link" to="/things">Items</router-link>
+						<router-link class="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" to="/things">Items</router-link>
 					</li>
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
