@@ -12,7 +12,7 @@
 			>
 				<span class="navbar-toggler-icon"></span>
 			</button>
-			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<div class="collapse navbar-collapse" id="navbarSupportedContent" :class="!menuOpen?'collapse':''">
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 					<li class="nav-item">
 						<router-link class="nav-link" to="/">
@@ -20,13 +20,13 @@
 						</router-link>
 					</li>
 					<li class="nav-item">
-						<router-link class="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" to="/characters">Characters</router-link>
+						<router-link class="nav-link" to="/characters" @click="menuOpen = !menuOpen">Characters</router-link>
 					</li>
 					<li class="nav-item">
-						<router-link class="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" to="/articles">Articles</router-link>
+						<router-link class="nav-link" to="/articles" @click="menuOpen = !menuOpen">Articles</router-link>
 					</li>
 					<li class="nav-item">
-						<router-link class="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" to="/things">Items</router-link>
+						<router-link class="nav-link" to="/things" @click="menuOpen = !menuOpen">Items</router-link>
 					</li>
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -49,26 +49,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue"
+import { ref } from "vue"
 import { UserIcon } from "@heroicons/vue/24/outline"
 
 const menuOpen = ref(false)
-const dropdownOpen = ref(false)
-
-const closeMenus = () => {
-	dropdownOpen.value = false
-	menuOpen.value = false
-}
-
-const handleClickOutside = () => {
-	closeMenus()
-}
-
-onMounted(async () => {
-	document.addEventListener("click", handleClickOutside)
-})
-
-onUnmounted(() => {
-	document.removeEventListener("click", handleClickOutside)
-})
 </script>
