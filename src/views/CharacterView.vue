@@ -1,7 +1,5 @@
 <template>
 	<div class="character-view">
-		<h2 v-if="character">{{ character.title }}</h2>
-		<h2 v-else>Create Character</h2>
 		<CharacterForm :character="character" @onSubmit="postCharacter" />
 	</div>
 </template>

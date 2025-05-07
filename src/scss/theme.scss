@@ -7,6 +7,7 @@ $dark-bg-subtle-dark: rgba(0, 0, 0, 0.80);
 $link-color-dark: $primary;
 $link-hover-color-dark: $cyan;
 $link-decoration: none;
+$btn-padding-x: 0.18rem;
 
 :root {
   --magenta-color: #ff147f; // define in BS instead
@@ -98,8 +99,8 @@ a {
   font-size: .40rem;
   position: absolute;
   bottom: -3px;
-  right: 12px;
-  padding: 4px 2px;
+  right: 8px;
+  padding: 6px 4px;
   background-color: var(--magenta-color);
   z-index: 3;
   border-left: 1px solid var(--blue-color);

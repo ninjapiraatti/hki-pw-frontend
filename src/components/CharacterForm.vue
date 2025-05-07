@@ -1,28 +1,26 @@
 <template>
-	<div class="container character-sheet">
-		<div class="d-flex justify-content-end mb-3">
-			<button @click="toggleEditMode" class="btn" :class="{'btn-primary': editMode, 'btn-outline-primary': !editMode}">
-				<template v-if="editMode">Done</template>
-				<template v-else>Edit</template>
-			</button>
-		</div>
-		
+	<div class="container character-sheet mt-4">		
 		<form @submit.prevent="submitForm">
 			<div class="angled-corner p-3">
-				<div class="mb-4 character-header">
-					<div v-if="editMode" class="w-100 row">
+				<div class="mb-4 character-header d-flex justify-content-between align-items-center">
+					<div v-if="editMode">
 						<label for="name" class="col-sm-2 col-form-label">Name</label>
-						<div class="col-sm-10">
-							<input type="text" class="form-control" id="name" v-model="form.name" required />
-						</div>
+						<input type="text" class="form-control" id="name" v-model="form.name" required />
 					</div>
 					<div v-else>
-						<h1 class="display-4">{{ form.title || "Unnamed Character" }}</h1>
+						<h1 class="display-6">{{ form.title || "Unnamed Character" }}</h1>
 					</div>
+					<button type="button" class="btn--glitch btn" role="link" @click="toggleEditMode">
+						<span class="btn__content">{{ `${editMode ? 'Done' : 'Edit'}` }}</span>
+						<span class="btn__effect"></span>
+						<span class="btn__label">
+							<PencilIcon class="btn__label__icon" />
+						</span>
+					</button>
 				</div>
 	
 				<div class="row">
-					<div class="col-6">
+					<div class="col-12 col-md-6">
 						<div class="mb-4">
 							<div v-if="imageUrl.length">
 								<img :src="imageUrl" class="mb-3 character-image" />
@@ -33,7 +31,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-6">
+					<div class="col-12 col-md-6">
 						<h4 class="text-muted mb-4">Character Stats</h4>
 							<div v-for="(stat, index) in stats" :key="index">
 								<div v-if="editMode" class="w-100 row">
@@ -83,17 +81,22 @@
 
 			<div class="skills-section angled-corner p-4 mb-4">
 				<h4 class="text-muted mb-4">Skills</h4>
-				<div class="row">
-					<div v-for="(skill, index) in skillsList" :key="index">
-						<div class="skill-display">
-							<div class="d-flex justify-content-between align-items-center">
-								<span class="skill-label">{{ skill.name }}</span>
-								<span class="skill-formula text-muted">{{ getSkillFormulaDisplay(skill) }}</span>
-								<span class="skill-value">{{ calculateSkillValue(skill) }}</span>
-							</div>
-						</div>
-					</div>
-				</div>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Skill</th>
+							<th>Formula</th>
+							<th>Value</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(skill, index) in skillsList" :key="index">
+							<td>{{ skill.name }}</td>
+							<td class="text-muted">{{ getSkillFormulaDisplay(skill) }}</td>
+							<td class="font-weight-bold">{{ calculateSkillValue(skill) }}</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 
 			<div v-if="editMode" class="text-center">
@@ -108,6 +111,7 @@
 <script setup lang="ts">
 import { ref, watch, defineProps, computed } from "vue"
 import { Character } from "@/types"
+import { PencilIcon } from "@heroicons/vue/24/outline"
 
 const emit = defineEmits(["onSubmit"])
 const props = defineProps<{
@@ -264,16 +268,6 @@ const submitForm = () => {
 
 .skills-section {
 	margin-top: 2rem;
-}
-
-.skill-display {
-	padding: 0.5rem;
-	border-radius: 4px;
-}
-
-.skill-label {
-	font-weight: bold;
-	width: 140px;
 }
 
 .skill-formula {
