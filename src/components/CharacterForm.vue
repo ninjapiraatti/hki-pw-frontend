@@ -10,7 +10,7 @@
 					<div v-else>
 						<h1 class="display-6">{{ form.title || "Unnamed Character" }}</h1>
 					</div>
-					<button type="button" class="btn--glitch btn" role="link" @click="toggleEditMode">
+					<button type="button" class="btn--glitch btn" @click="toggleEditMode">
 						<span class="btn__content">{{ `${editMode ? 'Done' : 'Edit'}` }}</span>
 						<span class="btn__effect"></span>
 						<span class="btn__label">
@@ -23,7 +23,7 @@
 					<div class="col-12 col-md-6">
 						<div class="mb-4">
 							<div v-if="imageUrl.length">
-								<img :src="imageUrl" class="mb-3 character-image" />
+								<img :src="imageUrl" class="mb-3 character-image" :alt="form.name || 'Character portrait'" />
 							</div>
 							<div v-if="editMode" class="mb-3 w-100 row">
 								<label for="image" class="form-label">Picture</label>
@@ -56,10 +56,18 @@
 											v-for="n in 10" 
 											:key="n" 
 											class="stat-bar" 
-											:class="{ 'filled': n <= form[stat] }"
+											:class="{ 
+												'filled': n <= form[stat], 
+												'bonus-filled': n > form[stat] && n <= getModifiedAttributeValue(stat) 
+											}"
 										></div>
 									</div>
-									<span class="stat-value">{{ form[stat] }}</span>
+									<span class="stat-value">
+										{{ form[stat] }}
+										<span v-if="getAttributeBonus(stat) !== 0" class="stat-bonus">
+											({{ getModifiedAttributeValue(stat) }})
+										</span>
+									</span>
 								</div>
 							</div>
 						</div>
@@ -110,12 +118,13 @@
 
 <script setup lang="ts">
 import { ref, watch, defineProps, computed } from "vue"
-import { Character } from "@/types"
+import { Character, Thing } from "@/types"
 import { PencilIcon } from "@heroicons/vue/24/outline"
 
 const emit = defineEmits(["onSubmit"])
 const props = defineProps<{
 	character?: Character | null
+	inventoryItems?: Thing[]
 }>()
 
 const stats = ["strength", "perception", "endurance", "charisma", "intelligence", "agility", "luck"] as const
@@ -154,9 +163,49 @@ const skillsList: Skill[] = [
 ]
 
 const calculateSkillValue = (skill: Skill): number => {
-	const attr1 = form.value[skill.formula[0]] || 1
-	const attr2 = form.value[skill.formula[1]] || 1
-	return (attr1 + attr2) * 3
+	const baseAttr1 = form.value[skill.formula[0]] || 1
+	const baseAttr2 = form.value[skill.formula[1]] || 1
+	
+	const attr1Bonus = getAttributeBonus(skill.formula[0])
+	const attr2Bonus = getAttributeBonus(skill.formula[1])
+	
+	const skillBonus = getSkillBonus(skill.name)
+	
+	return (baseAttr1 + attr1Bonus + baseAttr2 + attr2Bonus) * 3 + skillBonus
+}
+
+const getAttributeBonus = (attributeName: Stat): number => {
+	if (!props.inventoryItems) return 0
+	
+	return props.inventoryItems.reduce((total, item) => {
+		if (!item.attributeEffects) return total
+		
+		const effect = item.attributeEffects.find(
+			effect => effect.target.toLowerCase() === attributeName.toLowerCase()
+		)
+		
+		return total + (effect?.strength || 0)
+	}, 0)
+}
+
+const getSkillBonus = (skillName: string): number => {
+	if (!props.inventoryItems) return 0
+	
+	return props.inventoryItems.reduce((total, item) => {
+		if (!item.skillEffects) return total
+		
+		const effect = item.skillEffects.find(
+			effect => effect.target.toLowerCase() === skillName.toLowerCase()
+		)
+		
+		return total + (effect?.strength || 0)
+	}, 0)
+}
+
+const getModifiedAttributeValue = (attributeName: Stat): number => {
+	const baseValue = form.value[attributeName] || 1
+	const bonus = getAttributeBonus(attributeName)
+	return baseValue + bonus
 }
 
 const getSkillFormulaDisplay = (skill: Skill): string => {
@@ -198,6 +247,8 @@ const form = ref<Character>({
 	intelligence: 1,
 	agility: 1,
 	luck: 1,
+	deutscheMarks: 0,
+	inventory: [],
 })
 
 watch(
@@ -261,9 +312,19 @@ const submitForm = () => {
 	background-color: var(--magenta-color, #ff147f);
 }
 
+.stat-bar.bonus-filled {
+	background-color: var(--cyan-color, #00f0ff);
+}
+
 .stat-value {
-	width: 50px;
+	width: 80px;
 	text-align: right;
+}
+
+.stat-bonus {
+	color: var(--cyan-color, #00f0ff);
+	font-weight: bold;
+	margin-left: 0.25rem;
 }
 
 .skills-section {
