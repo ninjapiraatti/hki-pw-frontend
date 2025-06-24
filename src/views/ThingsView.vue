@@ -1,11 +1,11 @@
 <template>
   <div class="container-fluid p-5">
     <h1 class="mb-3">Weapons, items, and all such things</h1>
-    <MasonryListing
+    <ThingListing
       baseUrl="things"
       :items="things"
-      :ssr-columns="1"
-      :column-width="300"
+      :ssr-columns="4"
+      :column-width="180"
       :gap="48"
     />
   </div>
@@ -16,7 +16,7 @@ import { Listable } from "@/types"
 import { useUserStore } from "@/stores/user"
 import { ref, onMounted, computed } from "vue"
 import router from "@/router"
-import MasonryListing from "@/components/MasonryListing.vue"
+import ThingListing from "@/components/ThingListing.vue"
 
 const things = ref<Listable[]>([])
 const userStore = useUserStore()

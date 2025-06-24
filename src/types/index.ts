@@ -2,7 +2,7 @@ export interface Listable {
   id: string
   title: string
   ingress?: string
-  body: string
+  body?: string
   images?: Record<string, string>
   tags?: string[]
   created: string
@@ -20,17 +20,26 @@ export interface Character extends Listable {
   intelligence: number
   agility: number
   luck: number
+  deutscheMarks: number
+  inventory: string[]
+}
+
+export interface Thing extends Listable {
+  attributeEffects?: AttributeEffect[]
+  skillEffects?: SkillEffect[]
+  damage?: string
 }
 
 export interface Article extends Listable {
   author: string
 }
 
-export interface Effect {
-  name: string
-  description: string
+export interface AttributeEffect {
+  target: "Strength" | "Perception" | "Endurance" | "Charisma" | "Intelligence" | "Agility" | "Luck"
+  strength: number
 }
 
-export interface Thing extends Listable {
-  effects: Effect[]
+export interface SkillEffect {
+  target: string
+  strength: number
 }
