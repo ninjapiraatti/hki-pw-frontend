@@ -107,14 +107,14 @@ const postCharacter = async (newCharacter: Character) => {
 	}
 
 	try {
-		let url = ""
-		if (character.value) {
-			url = `https://hki2050.com/api/characters/${characterId.value}/`
-		} else {
-			url = `https://hki2050.com/api/characters/`
-		}
+		const isUpdate = character.value !== null
+		const url = isUpdate 
+			? `https://hki2050.com/api/characters/${characterId.value}/`
+			: `https://hki2050.com/api/characters/`
+		const method = isUpdate ? "PUT" : "POST"
+		
 		const response = await fetch(url, {
-			method: "POST",
+			method,
 			headers: {
 				"Content-Type": "application/json",
 				"X-API-Key": import
