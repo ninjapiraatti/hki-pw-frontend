@@ -1,5 +1,6 @@
 <template>
-	<div class="container character-sheet mt-4">		
+	<div class="container character-sheet mt-4">
+		inv: {{ inventoryItems }}
 		<form @submit.prevent="submitForm">
 			<div class="angled-corner p-3">
 				<div class="mb-4 character-header d-flex justify-content-between align-items-center">
@@ -107,6 +108,44 @@
 				</table>
 			</div>
 
+			<div class="inventory-section angled-corner p-4 mb-4">
+				<h4 class="text-muted mb-4">Inventory</h4>
+				
+				<div v-if="editMode" class="mb-3">
+					<div class="form-label mb-2">Add Item to Inventory</div>
+					<SearchableDropdown
+						:items="thingsStore.things"
+						:loading="thingsStore.loading"
+						placeholder="Search for items..."
+						@select="addItemToInventory"
+					/>
+				</div>
+				
+				<div v-if="characterInventory.length > 0">
+					<h5 class="text-muted mb-3">Current Items</h5>
+					<div class="row">
+						<div v-for="item in characterInventory" :key="item.id" class="col-md-6 col-lg-4 mb-3">
+							<div class="card bg-dark-subtle">
+								<div class="card-body">
+									<h6 class="card-title">{{ item.title }}</h6>
+									<p class="card-text small">{{ item.body ? truncateText(item.body, 80) : 'No description' }}</p>
+									<button 
+										v-if="editMode"
+										@click="removeItemFromInventory(item.id)" 
+										class="btn btn-sm btn-outline-danger"
+									>
+										Remove
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div v-else>
+					<p class="text-muted">No items in inventory</p>
+				</div>
+			</div>
+
 			<div v-if="editMode" class="text-center">
 				<button type="submit" @click="submitForm" class="btn btn-primary">
 					{{ character ? "Update Character" : "Create Character" }}
@@ -117,15 +156,54 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, defineProps, computed } from "vue"
-import { Character, Thing } from "@/types"
+import { ref, watch, defineProps, computed, onMounted } from "vue"
+import { Character, Thing, Listable } from "@/types"
 import { PencilIcon } from "@heroicons/vue/24/outline"
+import { useUserStore } from "@/stores/user"
+import { useThingsStore } from "@/stores/things"
+import SearchableDropdown from "@/components/SearchableDropdown.vue"
 
 const emit = defineEmits(["onSubmit"])
 const props = defineProps<{
 	character?: Character | null
 	inventoryItems?: Thing[]
 }>()
+
+const userStore = useUserStore()
+const thingsStore = useThingsStore()
+
+// Inventory-related computed properties
+const characterInventory = computed(() => {
+  if (!form.value?.inventory) return []
+  return thingsStore.getThingsByIds(form.value.inventory)
+})
+
+// Inventory functions
+const addItemToInventory = (item: Listable) => {
+	if (!form.value) return
+	
+	if (!form.value.inventory) {
+		form.value.inventory = []
+	}
+	
+	if (!form.value.inventory.includes(item.id)) {
+		form.value.inventory.push(item.id)
+	}
+}
+
+const removeItemFromInventory = (itemId: string) => {
+	if (!form.value?.inventory) return
+	
+	const index = form.value.inventory.indexOf(itemId)
+	if (index > -1) {
+		form.value.inventory.splice(index, 1)
+	}
+}
+
+const truncateText = (text: string, maxLength: number): string => {
+	if (text.length <= maxLength) return text
+	return text.substring(0, maxLength) + '...'
+}
 
 const stats = ["strength", "perception", "endurance", "charisma", "intelligence", "agility", "luck"] as const
 type Stat = typeof stats[number]
@@ -175,9 +253,7 @@ const calculateSkillValue = (skill: Skill): number => {
 }
 
 const getAttributeBonus = (attributeName: Stat): number => {
-	if (!props.inventoryItems) return 0
-	
-	return props.inventoryItems.reduce((total, item) => {
+	return characterInventory.value.reduce((total, item) => {
 		if (!item.attributeEffects) return total
 		
 		const effect = item.attributeEffects.find(
@@ -189,9 +265,7 @@ const getAttributeBonus = (attributeName: Stat): number => {
 }
 
 const getSkillBonus = (skillName: string): number => {
-	if (!props.inventoryItems) return 0
-	
-	return props.inventoryItems.reduce((total, item) => {
+	return characterInventory.value.reduce((total, item) => {
 		if (!item.skillEffects) return total
 		
 		const effect = item.skillEffects.find(
@@ -266,6 +340,10 @@ const submitForm = () => {
 	emit("onSubmit", form.value)
 	editMode.value = false
 }
+
+onMounted(() => {
+	thingsStore.fetchThings()
+})
 </script>
 
 <style scoped>
@@ -341,5 +419,18 @@ const submitForm = () => {
 	width: 50px;
 	text-align: right;
 	font-weight: bold;
+}
+
+.inventory-section {
+	margin-top: 2rem;
+}
+
+.card {
+	cursor: pointer;
+	transition: transform 0.2s;
+}
+
+.card:hover {
+	transform: translateY(-2px);
 }
 </style>
