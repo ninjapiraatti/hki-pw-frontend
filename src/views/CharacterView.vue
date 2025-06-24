@@ -91,32 +91,39 @@ const getCharacter = async (characterId: string) => {
 const postCharacter = async (newCharacter: Character) => {
 	if (loading.value === true) return
 	loading.value = true
-	const formData = new FormData()
-
-	formData.append("name", newCharacter.name)
-	formData.append("id", String(characterId.value))
-	formData.append("bio", newCharacter.bio)
-	if (newCharacter.image) {
-		formData.append("image", newCharacter.image)
+	
+	const payload = {
+		name: newCharacter.name,
+		id: String(characterId.value),
+		bio: newCharacter.bio,
+		strength: newCharacter.strength,
+		perception: newCharacter.perception,
+		endurance: newCharacter.endurance,
+		charisma: newCharacter.charisma,
+		intelligence: newCharacter.intelligence,
+		agility: newCharacter.agility,
+		luck: newCharacter.luck,
+		...(newCharacter.image && { image: newCharacter.image })
 	}
-	formData.append("strength", String(newCharacter.strength))
-	formData.append("perception", String(newCharacter.perception))
-	formData.append("endurance", String(newCharacter.endurance))
-	formData.append("charisma", String(newCharacter.charisma))
-	formData.append("intelligence", String(newCharacter.intelligence))
-	formData.append("agility", String(newCharacter.agility))
-	formData.append("luck", String(newCharacter.luck))
 
 	try {
 		let url = ""
 		if (character.value) {
-			url = `http://localhost:8888/hki-pw/characters/${characterId.value}/`
+			url = `https://hki2050.com/api/characters/${characterId.value}/`
 		} else {
-			url = `http://localhost:8888/hki-pw/characters/`
+			url = `https://hki2050.com/api/characters/`
 		}
 		const response = await fetch(url, {
 			method: "POST",
-			body: formData,
+			headers: {
+				"Content-Type": "application/json",
+				"X-API-Key": import
+					.meta
+					.env
+					.VITE_PW_APIKEY as string,
+				"authorization": 'Bearer ' + userStore.jwt,
+			},
+			body: JSON.stringify(payload),
 		})
 		if (!response.ok) {
 			throw new Error("Network response was not ok")
