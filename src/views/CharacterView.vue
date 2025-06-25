@@ -62,7 +62,8 @@ const postCharacter = async (characterPosted: Character) => {
 	const payload = {
 		name: characterPosted.name,
 		id: String(characterId.value),
-		bio: characterPosted.bio,
+		title: characterPosted.title,
+		body: characterPosted.body,
 		strength: characterPosted.strength,
 		perception: characterPosted.perception,
 		endurance: characterPosted.endurance,

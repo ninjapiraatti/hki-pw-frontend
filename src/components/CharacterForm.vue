@@ -6,7 +6,7 @@
 				<div class="mb-4 character-header d-flex justify-content-between align-items-center">
 					<div v-if="editMode">
 						<label for="name" class="col-sm-2 col-form-label">Name</label>
-						<input type="text" class="form-control" id="name" v-model="form.name" required />
+						<input type="text" class="form-control" id="name" v-model="form.title" required />
 					</div>
 					<div v-else>
 						<h1 class="display-6">{{ form.title || "Unnamed Character" }}</h1>
@@ -83,7 +83,7 @@
 					</div>
 					<div v-else>
 						<h4 class="text-muted mb-2">Bio</h4>
-						<p>{{ form.body || "No bio available" }}</p>
+						<div v-html="parsedBio"></div>
 					</div>
 				</div>
 			</div>
@@ -146,11 +146,6 @@
 				</div>
 			</div>
 
-			<div v-if="editMode" class="text-center">
-				<button type="submit" @click="submitForm" class="btn btn-primary">
-					{{ character ? "Update Character" : "Create Character" }}
-				</button>
-			</div>
 		</form>
 	</div>
 </template>
@@ -162,6 +157,7 @@ import { PencilIcon } from "@heroicons/vue/24/outline"
 import { useUserStore } from "@/stores/user"
 import { useThingsStore } from "@/stores/things"
 import SearchableDropdown from "@/components/SearchableDropdown.vue"
+import { marked } from 'marked'
 
 const emit = defineEmits(["onSubmit"])
 const props = defineProps<{
@@ -176,6 +172,12 @@ const thingsStore = useThingsStore()
 const characterInventory = computed(() => {
   if (!form.value?.inventory) return []
   return thingsStore.getThingsByIds(form.value.inventory)
+})
+
+// Markdown parsing for bio display (never fed back to form)
+const parsedBio = computed(() => {
+  if (!form.value?.body) return 'No bio available'
+  return marked(form.value.body)
 })
 
 // Inventory functions
@@ -290,7 +292,13 @@ const getSkillFormulaDisplay = (skill: Skill): string => {
 
 const editMode = ref(props.character === null)
 const toggleEditMode = () => {
-	editMode.value = !editMode.value
+	if (editMode.value) {
+		// If we're currently in edit mode and clicking "Done", submit the form
+		submitForm()
+	} else {
+		// If we're not in edit mode and clicking "Edit", enter edit mode
+		editMode.value = true
+	}
 }
 
 const onImageChange = (event: Event) => {
