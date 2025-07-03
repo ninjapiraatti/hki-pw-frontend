@@ -1,148 +1,147 @@
 <template>
-	<div class="container character-sheet mt-4">
-		inv: {{ inventoryItems }}
-		<form @submit.prevent="submitForm">
-			<div class="angled-corner p-3">
-				<div class="mb-4 character-header d-flex justify-content-between align-items-center">
-					<div v-if="editMode">
-						<label for="name" class="col-sm-2 col-form-label">Name</label>
-						<input type="text" class="form-control" id="name" v-model="form.title" required />
-					</div>
-					<div v-else>
-						<h1 class="display-6">{{ form.title || "Unnamed Character" }}</h1>
-					</div>
-					<button type="button" class="btn--glitch btn" @click="toggleEditMode">
-						<span class="btn__content">{{ `${editMode ? 'Done' : 'Edit'}` }}</span>
-						<span class="btn__effect"></span>
-						<span class="btn__label">
-							<PencilIcon class="btn__label__icon" />
-						</span>
-					</button>
-				</div>
-	
-				<div class="row">
-					<div class="col-12 col-md-6">
-						<div class="mb-4">
-							<div v-if="imageUrl.length">
-								<img :src="imageUrl" class="mb-3 character-image" :alt="form.name || 'Character portrait'" />
+	<div class="m-4">
+		<form @submit.prevent="submitForm" class="container-fluid">
+			<div class="row g-4">
+				<div class="col-12 col-lg-6">
+					<div class="angled-corner p-3">
+						<div class="mb-4 character-header d-flex justify-content-between align-items-center">
+							<div v-if="editMode">
+								<label for="name" class="col-sm-2 col-form-label">Name</label>
+								<input type="text" class="form-control" id="name" v-model="form.title" required />
 							</div>
-							<div v-if="editMode" class="mb-3 w-100 row">
-								<label for="image" class="form-label">Picture</label>
-								<input class="form-control" type="file" id="image" @change="onImageChange" />
+							<div v-else>
+								<h1 class="display-6">{{ form.title || "Unnamed Character" }}</h1>
 							</div>
+							<button type="button" class="btn--glitch btn" @click="toggleEditMode">
+								<span class="btn__content">{{ `${editMode ? 'Done' : 'Edit'}` }}</span>
+								<span class="btn__effect"></span>
+								<span class="btn__label">
+									<PencilIcon class="btn__label__icon" />
+								</span>
+							</button>
 						</div>
-					</div>
-					<div class="col-12 col-md-6">
-						<h4 class="text-muted mb-4">Character Stats</h4>
-							<div v-for="(stat, index) in stats" :key="index">
-								<div v-if="editMode" class="w-100 row">
-								<label :for="stat" class="col-sm-4 col-form-label text-capitalize">{{ stat }}</label>
-								<div class="col-sm-8">
-									<input
-										type="number"
-										class="form-control"
-										:id="stat"
-										v-model.number="form[stat]"
-										min="1"
-										max="10"
-										required
-									/>
-								</div>
-							</div>
-							<div v-else class="stat-display">
-								<div class="d-flex justify-content-between align-items-center">
-									<span class="text-capitalize stat-label">{{ stat }}</span>
-									<div class="stat-bars">
-										<div 
-											v-for="n in 10" 
-											:key="n" 
-											class="stat-bar" 
-											:class="{ 
-												'filled': n <= form[stat], 
-												'bonus-filled': n > form[stat] && n <= getModifiedAttributeValue(stat) 
-											}"
-										></div>
+			
+						<div class="row">
+							<div class="col-12 col-md-6">
+								<div class="mb-4">
+									<div v-if="imageUrl.length">
+										<img :src="imageUrl" class="mb-3 character-image" :alt="form.name || 'Character portrait'" />
 									</div>
-									<span class="stat-value">
-										{{ form[stat] }}
-										<span v-if="getAttributeBonus(stat) !== 0" class="stat-bonus">
-											({{ getModifiedAttributeValue(stat) }})
-										</span>
-									</span>
+									<div v-if="editMode" class="mb-3 w-100 row">
+										<label for="image" class="form-label">Picture</label>
+										<input class="form-control" type="file" id="image" @change="onImageChange" />
+									</div>
 								</div>
+							</div>
+							<div class="col-12 col-md-6">
+								<h4 class="text-muted mb-4">Character Stats</h4>
+									<div v-for="(stat, index) in stats" :key="index">
+										<div v-if="editMode" class="w-100 row">
+										<label :for="stat" class="col-sm-4 col-form-label text-capitalize">{{ stat }}</label>
+										<div class="col-sm-8">
+											<input
+												type="number"
+												class="form-control"
+												:id="stat"
+												v-model.number="form[stat]"
+												min="1"
+												max="10"
+												required
+											/>
+										</div>
+									</div>
+									<div v-else class="stat-display row">
+										<div class="text-capitalize stat-label col-4 col-lg-6 order-0">{{ stat }}</div>
+										<div class="stat-bars col-5 col-lg-12 order-1 order-lg-2">
+											<div 
+												v-for="n in 10" 
+												:key="n" 
+												class="stat-bar" 
+												:class="{ 
+													'filled': n <= form[stat], 
+													'bonus-filled': n > form[stat] && n <= getModifiedAttributeValue(stat) 
+												}"
+											></div>
+										</div>
+										<div class="text-end col-3 col-lg-6 order-2 order-lg-1">
+
+											<span :class="getAttributeBonus(stat) !== 0 ? 'stat-bonus' : 'stat-normal'">
+												{{ getModifiedAttributeValue(stat) }}
+											</span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="mb-4">
+							<div v-if="editMode" class="w-100 row">
+								<label for="bio" class="col-sm-2 col-form-label">Bio</label>
+								<div class="col-sm-10">
+									<textarea class="form-control" id="bio" name="bio" v-model="form.body" required />
+								</div>
+							</div>
+							<div v-else>
+								<h4 class="text-muted mb-2">Bio</h4>
+								<div v-html="parsedBio"></div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<div class="mb-4">
-					<div v-if="editMode" class="w-100 row">
-						<label for="bio" class="col-sm-2 col-form-label">Bio</label>
-						<div class="col-sm-10">
-							<textarea class="form-control" id="bio" name="bio" v-model="form.body" required />
+
+				<div class="col-12 col-lg-3">
+					<div class="angled-corner p-3">
+						<h4 class="text-muted mb-4">Skills</h4>
+						<table class="table w-100">
+							<tbody>
+								<tr v-for="(skill, index) in skillsList" :key="index">
+									<td>{{ skill.name }}</td>
+									<td class="font-weight-bold text-end">
+										{{ calculateSkillValue(skill) }}
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+
+				<div class="col-12 col-lg-3">
+					<div class="angled-corner p-3">
+						<h4 class="text-muted mb-4">Inventory</h4>
+						
+						<div v-if="editMode" class="mb-3">
+							<div class="form-label mb-2">Add Item to Inventory</div>
+							<SearchableDropdown
+								:items="thingsStore.things"
+								:loading="thingsStore.loading"
+								placeholder="Search for items..."
+								@select="addItemToInventory"
+							/>
 						</div>
-					</div>
-					<div v-else>
-						<h4 class="text-muted mb-2">Bio</h4>
-						<div v-html="parsedBio"></div>
-					</div>
-				</div>
-			</div>
-
-			<div class="skills-section angled-corner p-4 mb-4">
-				<h4 class="text-muted mb-4">Skills</h4>
-				<table class="table">
-					<thead>
-						<tr>
-							<th>Skill</th>
-							<th>Formula</th>
-							<th>Value</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr v-for="(skill, index) in skillsList" :key="index">
-							<td>{{ skill.name }}</td>
-							<td class="text-muted">{{ getSkillFormulaDisplay(skill) }}</td>
-							<td class="font-weight-bold">{{ calculateSkillValue(skill) }}</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-
-			<div class="inventory-section angled-corner p-4 mb-4">
-				<h4 class="text-muted mb-4">Inventory</h4>
-				
-				<div v-if="editMode" class="mb-3">
-					<div class="form-label mb-2">Add Item to Inventory</div>
-					<SearchableDropdown
-						:items="thingsStore.things"
-						:loading="thingsStore.loading"
-						placeholder="Search for items..."
-						@select="addItemToInventory"
-					/>
-				</div>
-				
-				<div v-if="characterInventory.length > 0">
-					<h5 class="text-muted mb-3">Current Items</h5>
-					<div class="row">
-						<div v-for="item in characterInventory" :key="item.id" class="col-md-6 col-lg-4 mb-3">
-							<div class="card bg-dark-subtle">
-								<div class="card-body">
-									<h6 class="card-title">{{ item.title }}</h6>
-									<p class="card-text small">{{ item.body ? truncateText(item.body, 80) : 'No description' }}</p>
-									<button 
-										v-if="editMode"
-										@click="removeItemFromInventory(item.id)" 
-										class="btn btn-sm btn-outline-danger"
-									>
-										Remove
-									</button>
+						
+						<div v-if="characterInventory.length > 0">
+							<h5 class="text-muted mb-3">Current Items</h5>
+							<div class="row">
+								<div v-for="item in characterInventory" :key="item.id" class="col-md-6 col-lg-4 mb-3">
+									<div class="card bg-dark-subtle">
+										<div class="card-body">
+											<h6 class="card-title">{{ item.title }}</h6>
+											<p class="card-text small">{{ item.body ? truncateText(item.body, 80) : 'No description' }}</p>
+											<button 
+												v-if="editMode"
+												@click="removeItemFromInventory(item.id)" 
+												class="btn btn-sm btn-outline-danger"
+											>
+												Remove
+											</button>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
+						<div v-else>
+							<p class="text-muted">No items in inventory</p>
+						</div>
 					</div>
-				</div>
-				<div v-else>
-					<p class="text-muted">No items in inventory</p>
 				</div>
 			</div>
 
@@ -355,35 +354,10 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.character-sheet {
-	max-width: 800px;
-	margin: 0 auto;
-}
-
-.character-header {
-	margin-bottom: 1rem;
-}
-
-.character-image {
-	max-width: 100%;
-	border-radius: 5px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.stat-display {
-	padding: 0.5rem;
-	border-radius: 4px;
-}
-
-.stat-label {
-	font-weight: bold;
-	width: 120px;
-}
 
 .stat-bars {
 	display: flex;
 	flex-grow: 1;
-	margin: 0 1rem;
 	gap: 3px;
 }
 
@@ -395,50 +369,23 @@ onMounted(() => {
 }
 
 .stat-bar.filled {
-	background-color: var(--magenta-color, #ff147f);
+	background-color: var(--magenta-color);
 }
 
 .stat-bar.bonus-filled {
-	background-color: var(--cyan-color, #00f0ff);
+	background-color: var(--cyan-color);
 }
 
-.stat-value {
-	width: 80px;
-	text-align: right;
-}
-
-.stat-bonus {
-	color: var(--cyan-color, #00f0ff);
+.stat-bonus, .stat-normal {
 	font-weight: bold;
 	margin-left: 0.25rem;
 }
 
-.skills-section {
-	margin-top: 2rem;
+.stat-bonus {
+	color: var(--cyan-color);
 }
 
-.skill-formula {
-	font-size: 0.85rem;
-	width: 80px;
-	text-align: center;
-}
-
-.skill-value {
-	width: 50px;
-	text-align: right;
-	font-weight: bold;
-}
-
-.inventory-section {
-	margin-top: 2rem;
-}
-
-.card {
-	cursor: pointer;
-	transition: transform 0.2s;
-}
-
-.card:hover {
-	transform: translateY(-2px);
+.stat-normal {
+	color: var(--magenta-color);
 }
 </style>

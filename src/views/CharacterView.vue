@@ -23,6 +23,7 @@ const characterId = computed(() => {
 })
 
 const characterInventory = computed(() => {
+	console.log("inv", character.value?.inventory)
   if (!character.value?.inventory) return []
   return thingsStore.getThingsByIds(character.value.inventory.map(String))
 })
