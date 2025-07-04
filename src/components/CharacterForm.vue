@@ -128,13 +128,16 @@
 						
 						<div v-if="characterInventory.length > 0">
 							<div v-for="item in characterInventory" :key="item.id" class="mb-2">
-								<div class="row g-2">
+								<div class="row g-2 position-relative">
 									<div class="col-3">
 										<img 
 											:src="itemImageUrl(item.id)"
 											class="w-100"
 											:alt="item.title"
 										/>
+										<div v-if="item.damage" class="damage-pill">
+											{{ item.damage }}
+										</div>
 									</div>
 									<div class="col-9">
 										<h6 class="inventory-title">{{ item.title }}</h6>
@@ -145,16 +148,12 @@
 											{{ effect.target }} {{ effect.strength > 0 ? '+' : '-' }}{{ effect.strength }}
 										</span>
 									</div>
-								</div>
-								<div class="row">
-									<div class="col-12">
-										<button 
-											@click="removeItemFromInventory(item.id)" 
-											class="btn btn-sm btn-outline-danger"
-										>
-											X
-										</button>
-									</div>
+									<button 
+										@click="removeItemFromInventory(item.id)" 
+										class="btn btn--icon inventory-remove-button"
+									>
+										<XMarkIcon class="btn--icon__icon" />
+									</button>
 								</div>
 							</div>
 						</div>
@@ -173,6 +172,7 @@
 import { ref, watch, defineProps, computed, onMounted } from "vue"
 import { Character, Thing, Listable } from "@/types"
 import { PencilIcon } from "@heroicons/vue/24/outline"
+import { XMarkIcon } from "@heroicons/vue/24/solid"
 import { useUserStore } from "@/stores/user"
 import { useThingsStore } from "@/stores/things"
 import SearchableDropdown from "@/components/SearchableDropdown.vue"
@@ -432,7 +432,14 @@ onMounted(() => {
 	font-size: 0.75rem;
 }
 
-.attribute-pill, .skill-pill {
+.inventory-remove-button {
+	position: absolute;
+	top: 0.1rem;
+	right: 0.1rem;
+	z-index: 2;
+}
+
+.attribute-pill, .skill-pill, .damage-pill {
 	display: inline-block;
 	color: white;
 	padding: 0.1rem 0.25rem 0rem 0.25rem;
@@ -447,5 +454,13 @@ onMounted(() => {
 
 .skill-pill {
 	background-color: $dark-cyan;
+}
+
+.damage-pill {
+	position: absolute;
+	bottom: -0.3rem;
+	left: 0.55rem;
+	z-index: 1;
+	background-color: $red;
 }
 </style>
