@@ -127,7 +127,7 @@
 						</div>
 						
 						<div v-if="characterInventory.length > 0">
-							<div v-for="item in characterInventory" :key="item.id" class="mb-2">
+							<div v-for="item in characterInventory" :key="item.id" class="mb-5">
 								<div class="row g-2 position-relative">
 									<div class="col-3">
 										<img 
@@ -434,7 +434,7 @@ onMounted(() => {
 
 .inventory-remove-button {
 	position: absolute;
-	top: 0.1rem;
+	top: 0.5rem;
 	right: 0.1rem;
 	z-index: 2;
 }
