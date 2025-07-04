@@ -2,18 +2,15 @@
 
 $primary: #ff047b;
 $cyan: #00f0ff;
+$dark-cyan: #115a63;
+$magenta: $primary;
+$red: #ff0000;
 
 $dark-bg-subtle-dark: rgba(0, 0, 0, 0.80);
 $link-color-dark: $primary;
 $link-hover-color-dark: $cyan;
 $link-decoration: none;
 $btn-padding-x: 0.18rem;
-
-:root {
-  --magenta-color: #ff147f; // define in BS instead
-  --cyan-color: #00f0ff;
-  --white-color: #fafafa;
-}
 
 // Cyberpunk styles
 
@@ -72,6 +69,23 @@ a {
 
 .logo-icon {
   width: 20px;
+}
+
+.btn--icon {
+  width: 18px;
+  height: 18px;
+  background-color: $magenta;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  &__icon {
+    color: #fff;
+    width: 14px;
+    height: 14px;
+    position: absolute;
+    top: 1px;
+    left: 1px;
+  }
 }
 
 .btn--glitch {

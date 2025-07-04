@@ -13,48 +13,21 @@
 
 <script setup lang="ts">
 import { Listable } from "@/types"
-import { useUserStore } from "@/stores/user"
+import { useThingsStore } from "@/stores/things"
 import { ref, onMounted, computed } from "vue"
-import router from "@/router"
 import ThingListing from "@/components/ThingListing.vue"
 
-const things = ref<Listable[]>([])
-const userStore = useUserStore()
-const rnd5 = computed(() => Math.floor(Math.random() * 5) + 1)
+const thingsStore = useThingsStore()
+const localThings = ref<Listable[]>([])
 const isLocalEnvironment = computed(() => import.meta.env.DEV)
 
-const getThings = async () => {
-	try {
-		const response = await fetch(`https://hki2050.com/api/things`, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-				"X-API-Key": import
-					.meta
-					.env
-					.VITE_PW_APIKEY as string,
-				"authorization": 'Bearer ' + userStore.jwt,
-			},
-		})
-		if (response.ok) {
-			const data = await response.json()
-			things.value = data.things
-		} else if (response.status === 404) {
-			console.warn("No content")
-		} else if (response.status === 401) {
-			router.push("/login")
-		} else {
-			throw new Error(`Error: ${response.status} ${response.statusText}`)
-		}
-	} catch (error) {
-		console.error("Error:", error)
-	}
-}
+// Combine store things with local dummy items for development
+const things = computed(() => [...thingsStore.things, ...localThings.value])
 
 const createDummyItems = () => {
   for (let i = 0; i < 12; i++) {
-    things.value.push({
-      id: `i`,
+    localThings.value.push({
+      id: `dummy-${i}`,
       title: `Dummy item ${i}`,
       body: getDummyText(),
       created: new Date().toISOString(),
@@ -75,7 +48,7 @@ const getDummyText = () => {
 }
 
 onMounted(async() => {
-	await getThings()
+	await thingsStore.fetchThings()
   if (isLocalEnvironment.value) {
     createDummyItems()
   }
