@@ -24,9 +24,12 @@
 						<div class="row">
 							<div class="col-12 col-md-6">
 								<div class="mb-4">
-									<div v-if="imageUrl.length">
-										<img :src="imageUrl" class="mb-3 character-image" :alt="form.name || 'Character portrait'" />
-									</div>
+									<img 
+										:src="imageUrl" 
+										class="mb-3 character-image w-100" 
+										:alt="form.name || 'Character portrait'"
+										@error="handleImageError"
+									/>
 									<div v-if="editMode" class="mb-3 w-100 row">
 										<label for="image" class="form-label">Picture</label>
 										<input class="form-control" type="file" id="image" @change="onImageChange" />
@@ -34,8 +37,7 @@
 								</div>
 							</div>
 							<div class="col-12 col-md-6">
-								<h4 class="text-muted mb-4">Character Stats</h4>
-									<div v-for="(stat, index) in stats" :key="index">
+								<div v-for="(stat, index) in stats" :key="index">
 										<div v-if="editMode" class="w-100 row">
 										<label :for="stat" class="col-sm-4 col-form-label text-capitalize">{{ stat }}</label>
 										<div class="col-sm-8">
@@ -52,7 +54,7 @@
 									</div>
 									<div v-else class="stat-display row">
 										<div class="text-capitalize stat-label col-4 col-lg-6 order-0">{{ stat }}</div>
-										<div class="stat-bars col-5 col-lg-12 order-1 order-lg-2">
+										<div class="stat-bars col-5 col-lg-12 order-1 order-lg-2 mb-3">
 											<div 
 												v-for="n in 10" 
 												:key="n" 
@@ -92,6 +94,12 @@
 					<div class="angled-corner p-3">
 						<h4 class="text-muted mb-4">Skills</h4>
 						<table class="table w-100">
+							<thead class="visually-hidden">
+								<tr>
+									<th>Skill Name</th>
+									<th>Value</th>
+								</tr>
+							</thead>
 							<tbody>
 								<tr v-for="(skill, index) in skillsList" :key="index">
 									<td>{{ skill.name }}</td>
@@ -119,21 +127,33 @@
 						</div>
 						
 						<div v-if="characterInventory.length > 0">
-							<h5 class="text-muted mb-3">Current Items</h5>
-							<div class="row">
-								<div v-for="item in characterInventory" :key="item.id" class="col-md-6 col-lg-4 mb-3">
-									<div class="card bg-dark-subtle">
-										<div class="card-body">
-											<h6 class="card-title">{{ item.title }}</h6>
-											<p class="card-text small">{{ item.body ? truncateText(item.body, 80) : 'No description' }}</p>
-											<button 
-												v-if="editMode"
-												@click="removeItemFromInventory(item.id)" 
-												class="btn btn-sm btn-outline-danger"
-											>
-												Remove
-											</button>
-										</div>
+							<div v-for="item in characterInventory" :key="item.id" class="mb-2">
+								<div class="row g-2">
+									<div class="col-3">
+										<img 
+											:src="itemImageUrl(item.id)"
+											class="w-100"
+											:alt="item.title"
+										/>
+									</div>
+									<div class="col-9">
+										<h6 class="inventory-title">{{ item.title }}</h6>
+										<span v-for="effect in item.attributeEffects" class="attribute-pill">
+											{{ effect.target.substring(0, 3).toUpperCase() }} {{ effect.strength > 0 ? '+' : '-' }}{{ effect.strength }}
+										</span>
+										<span v-for="effect in item.skillEffects" class="skill-pill">
+											{{ effect.target }} {{ effect.strength > 0 ? '+' : '-' }}{{ effect.strength }}
+										</span>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-12">
+										<button 
+											@click="removeItemFromInventory(item.id)" 
+											class="btn btn-sm btn-outline-danger"
+										>
+											X
+										</button>
 									</div>
 								</div>
 							</div>
@@ -309,8 +329,21 @@ const onImageChange = (event: Event) => {
 
 const imageUrl = computed(() => {
 	const baseUrl = "http://localhost:8888"
-	return props.character?.image ? `${baseUrl}${props.character.image}` : ""
+	if (props.character?.image) {
+		return `${baseUrl}${props.character.image}`
+	}
+	return new URL('../assets/placeholder.jpg', import.meta.url).href
 })
+
+const itemImageUrl = (itemId: string) => {
+	const baseUrl = "http://localhost:8888"
+	return new URL('../assets/square5.jpg', import.meta.url).href
+}
+
+const handleImageError = (event: Event) => {
+	const target = event.target as HTMLImageElement
+	target.src = new URL('../assets/placeholder.jpg', import.meta.url).href
+}
 
 const form = ref<Character>({
 	id: props.character?.id || "",
@@ -353,7 +386,7 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 
 .stat-bars {
 	display: flex;
@@ -369,11 +402,11 @@ onMounted(() => {
 }
 
 .stat-bar.filled {
-	background-color: var(--magenta-color);
+	background-color: $magenta;
 }
 
 .stat-bar.bonus-filled {
-	background-color: var(--cyan-color);
+	background-color: $cyan;
 }
 
 .stat-bonus, .stat-normal {
@@ -382,10 +415,37 @@ onMounted(() => {
 }
 
 .stat-bonus {
-	color: var(--cyan-color);
+	color: $cyan;
 }
 
 .stat-normal {
-	color: var(--magenta-color);
+	color: $magenta;
+}
+
+.inventory-title {
+	font-size: 0.8rem;
+	font-weight: 700;
+	margin-bottom: 0.25rem;
+}
+
+.inventory-description {
+	font-size: 0.75rem;
+}
+
+.attribute-pill, .skill-pill {
+	display: inline-block;
+	color: white;
+	padding: 0.1rem 0.25rem 0rem 0.25rem;
+	font-size: 0.65rem;
+	margin-right: 0.3rem;
+	margin-bottom: 0rem;
+}
+
+.attribute-pill {
+	background-color: $magenta;
+}
+
+.skill-pill {
+	background-color: $dark-cyan;
 }
 </style>

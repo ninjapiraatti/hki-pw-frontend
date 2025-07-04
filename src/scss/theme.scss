@@ -2,18 +2,14 @@
 
 $primary: #ff047b;
 $cyan: #00f0ff;
+$dark-cyan: #115a63;
+$magenta: $primary;
 
 $dark-bg-subtle-dark: rgba(0, 0, 0, 0.80);
 $link-color-dark: $primary;
 $link-hover-color-dark: $cyan;
 $link-decoration: none;
 $btn-padding-x: 0.18rem;
-
-:root {
-  --magenta-color: #ff147f; // define in BS instead
-  --cyan-color: #00f0ff;
-  --white-color: #fafafa;
-}
 
 // Cyberpunk styles
 
