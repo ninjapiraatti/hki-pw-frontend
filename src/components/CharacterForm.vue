@@ -438,29 +438,4 @@ onMounted(() => {
 	right: 0.1rem;
 	z-index: 2;
 }
-
-.attribute-pill, .skill-pill, .damage-pill {
-	display: inline-block;
-	color: white;
-	padding: 0.1rem 0.25rem 0rem 0.25rem;
-	font-size: 0.65rem;
-	margin-right: 0.3rem;
-	margin-bottom: 0rem;
-}
-
-.attribute-pill {
-	background-color: $magenta;
-}
-
-.skill-pill {
-	background-color: $dark-cyan;
-}
-
-.damage-pill {
-	position: absolute;
-	bottom: -0.3rem;
-	left: 0.55rem;
-	z-index: 1;
-	background-color: $red;
-}
 </style>

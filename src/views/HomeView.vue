@@ -1,5 +1,5 @@
 <template>
-	<div class="container-fluid text-center">
+	<div class="container text-center">
 		<div class="w-100 my-4">
 			<img class="logo" src="../assets/logo.png" alt="HKI2050 logo" />
 		</div>

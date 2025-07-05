@@ -22,6 +22,10 @@ a {
   transition: 0.2s color;
 }
 
+.container.container--narrow {
+  max-width: 50rem;
+}
+
 .card-title {
   margin-top: -1.6rem;
   padding: 0.2rem 0.2rem;
@@ -37,7 +41,7 @@ a {
     content: '';
     position: absolute;
     top: 0;
-    left: -5%;
+    left: -5px;
     width: 0;
     height: 100%;
     background-color: #000;
@@ -48,7 +52,6 @@ a {
   &:hover {
     color: $cyan;
     &::before {
-      width: 100%;
       animation: jagged-swipe 0.4s steps(8, end) forwards;
     }
   }
@@ -69,6 +72,39 @@ a {
 
 .logo-icon {
   width: 20px;
+}
+
+.attribute-pill, .skill-pill, .damage-pill {
+	display: inline-block;
+	color: white;
+	padding: 0.1rem 0.25rem 0rem 0.25rem;
+	font-size: 0.65rem;
+	margin-right: 0.3rem;
+	margin-bottom: 0rem;
+}
+
+.attribute-pill {
+	background-color: $magenta;
+}
+
+.skill-pill {
+	background-color: $dark-cyan;
+}
+
+.damage-pill {
+	position: absolute;
+	bottom: -0.3rem;
+	left: 0.55rem;
+	z-index: 1;
+	background-color: $red;
+  &--listing {
+    position: absolute;
+    bottom: unset;
+    left: unset;
+    top: 0.55rem;
+    right: 0.2rem;
+    z-index: 1;
+  }
 }
 
 .btn--icon {
@@ -94,7 +130,7 @@ a {
   background-color: #000;
   position: relative;
   text-transform: uppercase;
-  color: #000;
+  color: #fff;
   clip-path: polygon(0% 0%, calc(100% - 10px) 0%, 100% 10px, 100% 100%, 0% 100%);
   padding: 5px;
   border-radius: 0;
@@ -105,7 +141,7 @@ a {
   align-items: center;
   justify-content: center;
   padding: 0.6rem 0.8rem;
-  background-color: var(--magenta-color);
+  background-color: $magenta;
   clip-path: polygon(0% 0%, calc(100% - 10px) 0%, 100% 10px, 100% 100%, 0% 100%);
 }
 
@@ -115,7 +151,7 @@ a {
   bottom: -3px;
   right: 8px;
   padding: 6px 4px;
-  background-color: var(--magenta-color);
+  background-color: $magenta;
   z-index: 3;
   border-left: 1px solid var(--blue-color);
   &__icon {
@@ -130,7 +166,7 @@ a {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: var(--magenta-color);
+  background-color: $magenta;
   filter: drop-shadow(-2px 3px #67e3f3) drop-shadow(-1px -3px #02d8f3) drop-shadow(2px 1px #02d8f3);
 }
 
@@ -387,6 +423,6 @@ a {
     width: 84%;
   }
   100% {
-    width: 110%;
+    width: 120%;
   }
 }

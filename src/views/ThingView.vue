@@ -1,5 +1,5 @@
 <template>
-	<div class="container-fluid">
+	<div class="container container--narrow">
 		<div class="angled-corner p-4 mb-4 mt-4">
 			<h1>{{ thing?.title }}</h1>
 			<div v-html="thingBody" class="text-start"></div>
@@ -12,12 +12,17 @@ import { Thing } from "@/types"
 import { useUserStore } from "@/stores/user"
 import { ref, onMounted, computed } from "vue"
 import { useRoute } from "vue-router"
+import { marked } from "marked"
 import router from "@/router"
 
 const thing = ref<Thing>()
 const userStore = useUserStore()
 const route = useRoute()
-const thingBody = computed(() => thing.value?.body)
+
+const thingBody = computed(() => {
+  if (!thing.value?.body) return 'Content not available'
+  return marked(thing.value?.body)
+})
 
 const getthing = async (thingId: string) => {
 	try {

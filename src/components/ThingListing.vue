@@ -1,31 +1,27 @@
 <template>
   <masonry-wall :items="items" :ssr-columns="ssrColumns" :column-width="columnWidth" :gap="gap">
     <template #default="{ item, index }">
-      <div class="card bg-dark-subtle p-2">
+      <div class="card bg-dark-subtle p-2 position-relative">
         <img
           v-if="item.images && (Object.keys(item.images).length > 0)"
           class="card-img-top w-100" :src="`${Object.values(item.images)[0]}`"
           alt="thing.title"
         />
         <img v-else class="card-img-top w-100" :src="`../app/src/assets/square${index + 1 < 6 ? index + 1 : 4}.jpg`" alt="thing.title" />
+        <div v-if="item.damage" class="damage-pill damage-pill--listing">
+          {{ item.damage }}
+        </div>
         <div class="card-body">
           <h5 class="card-title">
             <router-link class="hover-swipe card-title" :to="`/${baseUrl}/${item.id}`">{{ item.title }}</router-link>
           </h5>
           <p class="small">{{ item.ingress }}</p>
-          <div v-if="item.attributeEffects?.length" class="mb-2">
-            <span class="badge bg-secondary me-2 p-1 small" v-for="(effect, i) in item.attributeEffects" :key="i">
-              {{ getAttributeAbbreviaton(effect.target) }} {{ effect.strength}}
-            </span>
-          </div>
-          <div v-if="item.skillEffects?.length">
-            <span class="badge bg-secondary small p-1" v-for="(effect, i) in item.skillEffects" :key="i">
-              {{ effect.target }} {{ effect.strength}}
-            </span>
-          </div>
-          <div v-if="item.damage" class="mt-2">
-            <p class="card-text">Damage: {{ item.damage }}</p>
-          </div>
+          <span v-for="effect in item.attributeEffects" class="attribute-pill">
+            {{ effect.target.substring(0, 3).toUpperCase() }} {{ effect.strength > 0 ? '+' : '-' }}{{ effect.strength }}
+          </span>
+          <span v-for="effect in item.skillEffects" class="skill-pill">
+            {{ effect.target }} {{ effect.strength > 0 ? '+' : '-' }}{{ effect.strength }}
+          </span>
         </div>
       </div>
     </template>
@@ -42,18 +38,5 @@ defineProps<{
   columnWidth: number;
   gap: number;
 }>();
-
-const getAttributeAbbreviaton = (attribute: string): string => {
-  const abbreviations: Record<string, string> = {
-    Strength: "STR",
-    Perception: "PER",
-    Endurance: "END",
-    Charisma: "CHA",
-    Intelligence: "INT",
-    Agility: "AGI",
-    Luck: "LCK",
-  };
-  return abbreviations[attribute] || attribute;
-};
 
 </script>
