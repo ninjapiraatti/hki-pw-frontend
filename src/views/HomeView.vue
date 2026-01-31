@@ -60,7 +60,7 @@
 					<p>Then the sea came.</p>
 
 					<p>
-						Antarctica's collapse had been accelerating for years, but after the crash, Helsinki couldn't afford to
+						North pole's collapse had been accelerating for years, but after the crash, Helsinki couldn't afford to
 						fight it. Thirteen meters by 2050. Kalasatama, gone. Ruoholahti, half-drowned. Lauttasaari, now three
 						separate islands. Entire neighborhoods swallowed, and whatever services remained got privatized to keep the
 						lights on in the parts that still mattered to someone with money.
