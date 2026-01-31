@@ -27,31 +27,37 @@ const router = createRouter({
 			path: "/articles",
 			name: "Articles",
 			component: ArticlesView,
+			meta: { requiresAuth: true },
 		},
 		{
 			path: "/articles/:id",
 			name: "Article",
 			component: ArticleView,
+			meta: { requiresAuth: true },
 		},
 		{
 			path: "/things",
 			name: "Things",
 			component: ThingsView,
+			meta: { requiresAuth: true },
 		},
 		{
 			path: "/things/:id",
 			name: "Thing",
 			component: ThingView,
+			meta: { requiresAuth: true },
 		},
 		{
 			path: "/characters",
 			name: "Characters",
 			component: CharactersView,
+			meta: { requiresAuth: true },
 		},
 		{
 			path: "/characters/:id",
 			name: "Character",
 			component: CharacterView,
+			meta: { requiresAuth: true },
 		},
     /*
 		{

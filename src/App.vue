@@ -4,13 +4,9 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue"
-import { useUserStore } from '@/stores/user'
+import { onMounted } from "vue"
 import { RouterView } from "vue-router"
 import TheHeader from "@/components/TheHeader.vue"
-import router from "@/router"
-
-const userStore = useUserStore()
 
 function applyRandomClassToRandomElement(className: string, tagNames: string[]): void {
 	const elements = Array.from(tagNames.flatMap((tag) => Array.from(document.getElementsByTagName(tag))))
@@ -45,9 +41,6 @@ function startRandomClassTimer(className: string, tagNames: string[], interval: 
 
 onMounted(async() => {
 	startRandomClassTimer("glitch", ["img", "svg", "a", "h1"], 5000, 0.5)
-	if (!userStore.isAuthenticated){
-		router.push("/login")
-	}
 })
 
 </script>
