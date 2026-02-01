@@ -59,9 +59,16 @@ const getCharacter = async (characterId: string) => {
 const postCharacter = async (characterPosted: Character) => {
 	if (loading.value === true) return
 	loading.value = true
-	
+
+	const sanitizedName = characterPosted.title
+		.toLowerCase()
+		.replace(/\s+/g, '-')
+		.replace(/[^a-z0-9-]/g, '')
+		.replace(/-+/g, '-')
+		.replace(/^-|-$/g, '')
+
 	const payload = {
-		name: characterPosted.name,
+		name: sanitizedName,
 		id: String(characterId.value),
 		title: characterPosted.title,
 		body: characterPosted.body,
