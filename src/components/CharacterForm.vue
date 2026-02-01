@@ -32,7 +32,7 @@
 									/>
 									<div v-if="editMode" class="mb-3 w-100 row">
 										<label for="image" class="form-label">Picture</label>
-										<input class="form-control" type="file" id="image" @change="onImageChange" />
+										<input class="form-control" type="file" id="image" accept="image/jpeg,image/png,image/gif,image/webp" @change="onImageChange" />
 									</div>
 								</div>
 							</div>
@@ -320,17 +320,34 @@ const toggleEditMode = () => {
 	}
 }
 
+const portraitPreview = ref<string | null>(null)
+
 const onImageChange = (event: Event) => {
 	const target = event.target as HTMLInputElement
 	if (target.files && target.files.length > 0) {
-		form.value.image = target.files[0]
+		const file = target.files[0]
+		form.value.image = file
+
+		// Convert to base64 for API submission
+		const reader = new FileReader()
+		reader.onload = (e) => {
+			const result = e.target?.result as string
+			form.value.uploadImage = result
+			portraitPreview.value = result
+		}
+		reader.readAsDataURL(file)
 	}
 }
 
 const imageUrl = computed(() => {
-	const baseUrl = "http://localhost:8888"
-	if (props.character?.image) {
-		return `${baseUrl}${props.character.image}`
+	// Show preview of newly selected file first
+	if (portraitPreview.value) {
+		return portraitPreview.value
+	}
+	// Show existing image from server (first image in the Record)
+	if (props.character?.images) {
+		const firstImage = Object.values(props.character.images)[0]
+		if (firstImage) return firstImage
 	}
 	return new URL('../assets/placeholder.jpg', import.meta.url).href
 })
@@ -371,6 +388,7 @@ watch(
 		if (newCharacter) {
 			form.value = { ...newCharacter }
 			editMode.value = false
+			portraitPreview.value = null
 		}
 	}
 )
