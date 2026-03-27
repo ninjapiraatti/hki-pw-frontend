@@ -6,6 +6,7 @@ import CharactersView from "@/views/CharactersView.vue"
 import CharacterView from "@/views/CharacterView.vue"
 import HomeView from "@/views/HomeView.vue"
 import LoginView from "@/views/LoginView.vue"
+import MapView from "@/views/MapView.vue"
 import NotFoundView404 from "@/views/404View.vue"
 
 import { createRouter, createWebHistory } from "vue-router"
@@ -57,6 +58,12 @@ const router = createRouter({
 			path: "/characters/:id",
 			name: "Character",
 			component: CharacterView,
+			meta: { requiresAuth: true },
+		},
+		{
+			path: "/map",
+			name: "Map",
+			component: MapView,
 			meta: { requiresAuth: true },
 		},
     /*

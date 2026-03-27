@@ -28,6 +28,9 @@
 					<li class="nav-item">
 						<router-link class="nav-link" to="/things" @click="menuOpen = !menuOpen">Items</router-link>
 					</li>
+					<li class="nav-item">
+						<router-link class="nav-link" to="/map" @click="menuOpen = !menuOpen">Map</router-link>
+					</li>
 				</ul>
 				<div class="dropdown">
 					<button
