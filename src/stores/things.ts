@@ -63,8 +63,9 @@ export const useThingsStore = defineStore('things', () => {
     return things.value.find(thing => thing.id === id)
   }
 
-  const getThingsByIds = (ids: string[]) => {
-    return things.value.filter(thing => ids.includes(String(thing.id)))
+  const getThingsByIds = (ids: (string | number)[]) => {
+    const stringIds = ids.map(id => String(id))
+    return things.value.filter(thing => stringIds.includes(String(thing.id)))
   }
 
   const clearCache = () => {

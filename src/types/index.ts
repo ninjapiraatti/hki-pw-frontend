@@ -13,6 +13,7 @@ export interface Character extends Listable {
   name: string
   bio: string
   image: File | null
+  uploadImage?: string
   strength: number
   perception: number
   endurance: number
@@ -21,7 +22,7 @@ export interface Character extends Listable {
   agility: number
   luck: number
   deutscheMarks: number
-  inventory: string[]
+  inventory: (string | number)[]
 }
 
 export interface Thing extends Listable {

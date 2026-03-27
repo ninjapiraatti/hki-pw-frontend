@@ -23,9 +23,8 @@ const characterId = computed(() => {
 })
 
 const characterInventory = computed(() => {
-	console.log("inv", character.value?.inventory)
   if (!character.value?.inventory) return []
-  return thingsStore.getThingsByIds(character.value.inventory.map(String))
+  return thingsStore.getThingsByIds(character.value.inventory)
 })
 
 const getCharacter = async (characterId: string) => {
@@ -81,7 +80,7 @@ const postCharacter = async (characterPosted: Character) => {
 		luck: characterPosted.luck,
 		inventory: characterPosted.inventory,
 		deutscheMarks: characterPosted.deutscheMarks,
-		...(characterPosted.image && { image: characterPosted.image })
+		...(characterPosted.uploadImage && { images: [characterPosted.uploadImage] })
 	}
 
 	try {
