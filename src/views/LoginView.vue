@@ -22,8 +22,11 @@
 
 <script setup lang="ts">
 import { ref } from "vue"
+import { useRoute } from "vue-router"
 import { useUserStore } from '@/stores/user'
 import router from "@/router"
+
+const route = useRoute()
 
 const refreshToken = ref("")
 const userStore = useUserStore()
@@ -71,7 +74,8 @@ const getAccessToken = async () => {
 		if (response.ok) {
 			const data = await response.json()
 			userStore.setToken(data.access_token)
-      router.push("/")
+			const redirectPath = route.query.redirect as string || "/"
+			router.push(redirectPath)
 		} else {
 			throw new Error(`Error: ${response.status} ${response.statusText}`)
 		}

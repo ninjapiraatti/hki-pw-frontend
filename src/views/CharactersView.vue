@@ -18,7 +18,10 @@
 import { Listable } from "@/types"
 import { useUserStore } from "@/stores/user"
 import { ref, onMounted } from "vue"
+import { useRoute } from "vue-router"
 import router from "@/router"
+
+const route = useRoute()
 import MasonryListing from "@/components/MasonryListing.vue"
 
 const responseMessage = ref("")
@@ -44,7 +47,7 @@ const getCharacters = async () => {
 		} else if (response.status === 404) {
 			console.warn("No content")
 		} else if (response.status === 401) {
-			router.push("/login")
+			router.push({ name: "Login", query: { redirect: route.fullPath } })
 		} else {
 			throw new Error(`Error: ${response.status} ${response.statusText}`)
 		}

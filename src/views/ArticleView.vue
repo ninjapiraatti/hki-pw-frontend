@@ -43,7 +43,7 @@ const getArticle = async (articleId: string) => {
 		} else if (response.status === 404) {
 			console.warn("No content")
 		} else if (response.status === 401) {
-			router.push("/login")
+			router.push({ name: "Login", query: { redirect: route.fullPath } })
 		} else {
 			throw new Error(`Error: ${response.status} ${response.statusText}`)
 		}

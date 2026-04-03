@@ -9,6 +9,7 @@ import LoginView from "@/views/LoginView.vue"
 import NotFoundView404 from "@/views/404View.vue"
 
 import { createRouter, createWebHistory } from "vue-router"
+import { useUserStore } from "@/stores/user"
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -88,6 +89,15 @@ const router = createRouter({
 			component: NotFoundView404,
 		},
 	],
+})
+
+router.beforeEach((to, _from) => {
+	if (to.meta.requiresAuth) {
+		const userStore = useUserStore()
+		if (!userStore.isAuthenticated) {
+			return { name: "Login", query: { redirect: to.fullPath } }
+		}
+	}
 })
 
 export default router
